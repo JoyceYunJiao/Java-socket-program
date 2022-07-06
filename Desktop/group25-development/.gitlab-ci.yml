@@ -1,0 +1,27 @@
+image: maven:3.8.3-openjdk-17
+
+stages:
+  - build
+  - test
+
+maven-build:
+  stage: build
+  script:
+    - cd backend
+    - mvn clean package -DskipTests
+  artifacts:
+    paths:
+      - backend/target/*.jar
+    expire_in: 1 week
+
+test-job:
+  stage: test
+  script:
+    - cd backend
+    - mvn clean verify
+  artifacts:
+    reports:
+      junit:
+        - backend/target/surefire-reports/TEST-*.xml
+        - backend/target/failsafe-reports/TEST-*.xml
+    expire_in: 1 week
